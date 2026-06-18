@@ -45,7 +45,7 @@ body{background:var(--dark);color:var(--text);font-family:"DM Sans",sans-serif;f
 .tag{display:inline-block;background:var(--amarelo2);border:1px solid var(--amarelo3);color:var(--amarelo);font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;padding:5px 16px;border-radius:100px;margin-bottom:28px}
 .hero h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(44px,7vw,88px);line-height:0.95;letter-spacing:-0.5px;margin-bottom:24px;max-width:820px;margin-left:auto;margin-right:auto}
 .hero h1 em{color:var(--amarelo);font-style:normal}
-.hero .sub{font-size:clamp(16px,2vw,20px);color:#bbb;max-width:580px;margin:0 auto 40px;line-height:1.6}
+.hero .sub{font-size:clamp(16px,2vw,20px);color:#bbb;max-width:580px;margin:0 auto 0;line-height:1.6}
 .hero .sub strong{color:var(--text)}
 
 /* BADGES */
@@ -69,9 +69,8 @@ body{background:var(--dark);color:var(--text);font-family:"DM Sans",sans-serif;f
 .sec h2 em{color:var(--amarelo);font-style:normal}
 
 /* VSL */
-.vsl-wrap{background:var(--dark2);border:1px solid var(--border);border-radius:8px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;max-width:720px;margin:32px auto 0;overflow:hidden}
-.vsl-wrap iframe{width:100%;height:100%;border:none}
-.vsl-placeholder{text-align:center;color:var(--muted);font-size:14px}
+.vsl-wrap{position:relative;width:100%;max-width:720px;margin:0 auto;border-radius:8px;overflow:hidden;border:1px solid var(--border);aspect-ratio:16/9}
+.vsl-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
 
 /* PRECO */
 .preco-bloco{background:var(--dark2);border:1px solid rgba(255,208,0,0.3);border-radius:10px;padding:36px 32px;text-align:center;max-width:480px;margin:32px auto 0}
@@ -167,19 +166,21 @@ body{background:var(--dark);color:var(--text);font-family:"DM Sans",sans-serif;f
   <div class="tag">Método Solar 100k</div>
   <h1>Sua empresa de energia solar<br>vendendo <em>todos os meses</em><br>— com ou sem indicação</h1>
   <p class="sub">Cansado de depender de quem te indica? De gerar leads e não conseguir atender bem? O que falta pode ser mais simples do que você pensa: <strong>um processo comercial de verdade.</strong></p>
+</div>
 
-  <div class="div"></div>
+<div class="div"></div>
 
 <!-- VSL -->
-<section class="sec" style="text-align:center;padding-top:5px;padding-bottom:5px">
+<section class="sec" style="padding-top:40px;padding-bottom:40px">
   <div class="vsl-wrap">
-    <!-- COLE SEU EMBED AQUI: <iframe width="560" height="315" src="https://www.youtube.com/embed/Ngn_xxflE20?si=eiJxKE8DkxwHKYj8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></iframe> -->
-    <p class="vsl-placeholder">▶ </p>
+    <iframe src="https://www.youtube.com/embed/Ngn_xxflE20?si=eiJxKE8DkxwHKYj8" title="Método Solar 100k" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
   </div>
 </section>
 
 <div class="div"></div>
-  
+
+<!-- BADGES + CTA -->
+<div style="text-align:center;padding:40px 24px 56px;background:var(--dark)">
   <div class="badges">
     <div class="badge"><span>▶</span> Vídeo aulas</div>
     <div class="badge"><span>🗺</span> Mapa mental completo</div>
@@ -187,10 +188,11 @@ body{background:var(--dark);color:var(--text);font-family:"DM Sans",sans-serif;f
     <div class="badge"><span>⚡</span> Acesso imediato</div>
     <div class="badge"><span>🎁</span> Bônus incluídos</div>
   </div>
-
   <a href="https://pay.kiwify.com.br/aU7VMHo" class="btn">Quero garantir minha vaga agora — R$37</a>
   <p class="btn-sub">🔒 Pagamento seguro · 7 dias de garantia incondicional</p>
 </div>
+
+<div class="div"></div>
 
 <!-- PRINTS -->
 <section class="sec">
@@ -357,7 +359,6 @@ body{background:var(--dark);color:var(--text);font-family:"DM Sans",sans-serif;f
       <p>Você adquire o acesso completo ao Método Solar 100k e tem 7 dias para avaliar. Se por qualquer motivo achar que não é pra você, ou que não vale o investimento, é só mandar uma mensagem — devolvo integralmente o seu dinheiro. Sem perguntas, sem burocracia. A decisão de começar é sua, o risco é todo meu.</p>
     </div>
   </div>
-
   <div class="btn-wrap" style="margin-top:40px">
     <a href="https://pay.kiwify.com.br/aU7VMHo" class="btn">APROVEITAR O ÚLTIMO DIA DE DESCONTO</a>
     <p class="btn-sub">🔒 Ambiente 100% seguro · Kiwify</p>
@@ -413,7 +414,6 @@ body{background:var(--dark);color:var(--text);font-family:"DM Sans",sans-serif;f
   <div class="sec-label">Não deixe pra depois</div>
   <h2>Poderíamos cobrar R$197.<br>Mas por <em>hoje</em> é R$37.</h2>
   <p style="color:#999;font-size:15px;margin-bottom:36px;max-width:500px;margin-left:auto;margin-right:auto">Desconto de 97% válido somente hoje. Quando o timer zerar, o preço volta.</p>
-
   <div class="preco-bloco">
     <div class="countdown-wrap">
       <div class="countdown-label">Oferta encerra em</div>
@@ -451,18 +451,13 @@ body{background:var(--dark);color:var(--text);font-family:"DM Sans",sans-serif;f
 </div>
 
 <script>
-// Countdown — 8 horas a partir do carregamento
 function startTimer(elementId) {
   const end = new Date();
   end.setHours(end.getHours() + 8);
-
   function tick() {
     const now = new Date();
     const diff = end - now;
-    if (diff <= 0) {
-      document.getElementById(elementId).textContent = "00:00:00";
-      return;
-    }
+    if (diff <= 0) { document.getElementById(elementId).textContent = "00:00:00"; return; }
     const h = Math.floor(diff / 3600000).toString().padStart(2,"0");
     const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2,"0");
     const s = Math.floor((diff % 60000) / 1000).toString().padStart(2,"0");
