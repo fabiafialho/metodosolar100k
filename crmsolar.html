@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar CRM — Kanban Comercial</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0a;
+  --bg2:#111;
+  --bg3:#1a1a1a;
+  --bg4:#222;
+  --border:#2a2a2a;
+  --border2:#333;
+  --text:#f0f0f0;
+  --muted:#666;
+  --muted2:#888;
+  --sol:#FFD000;
+  --sol2:rgba(255,208,0,0.12);
+  --sol3:rgba(255,208,0,0.25);
+  --green:#22c55e;
+  --red:#ef4444;
+  --blue:#3b82f6;
+  --orange:#f97316;
+  --radius:8px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* HEADER */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
+.logo-icon{background:var(--sol);color:#000;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+.header-actions{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s}
+.btn-primary{background:var(--sol);color:#000}
+.btn-primary:hover{background:#e6bc00}
+.btn-ghost{background:transparent;color:var(--muted2);border:1px solid var(--border2)}
+.btn-ghost:hover{background:var(--bg3);color:var(--text)}
+.btn-danger{background:transparent;color:var(--red);border:1px solid rgba(239,68,68,0.3)}
+.btn-danger:hover{background:rgba(239,68,68,0.1)}
+
+/* BOARD */
+.board-wrap{flex:1;overflow-x:auto;overflow-y:hidden;padding:16px 20px 20px}
+.board{display:flex;gap:12px;height:100%;align-items:flex-start}
+
+/* COLUNA */
+.col{background:var(--bg2);border:1px solid var(--border);border-radius:10px;width:260px;min-width:260px;display:flex;flex-direction:column;max-height:100%}
+.col-header{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0}
+.col-title-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.col-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.col-title{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.col-count{background:var(--bg4);color:var(--muted2);font-size:11px;font-weight:600;padding:2px 7px;border-radius:100px;flex-shrink:0}
+.col-actions{display:flex;gap:4px;flex-shrink:0}
+.icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;border-radius:4px;font-size:14px;line-height:1;transition:all .15s}
+.icon-btn:hover{background:var(--bg3);color:var(--text)}
+.col-body{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+.col-body::-webkit-scrollbar{width:3px}
+.col-body::-webkit-scrollbar-track{background:transparent}
+.col-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+.add-card-btn{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:6px;color:var(--muted);font-size:13px;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all .15s;flex-shrink:0;margin:4px 10px 10px}
+.add-card-btn:hover{background:var(--bg3);color:var(--text)}
+
+/* ADD COLUMN */
+.add-col-btn{background:var(--bg2);border:1px dashed var(--border2);border-radius:10px;width:220px;min-width:220px;height:60px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:13px;cursor:pointer;transition:all .15s;flex-shrink:0}
+.add-col-btn:hover{border-color:var(--sol3);color:var(--sol);background:var(--sol2)}
+
+/* CARD */
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;cursor:grab;transition:all .15s;position:relative}
+.card:hover{border-color:var(--border2);box-shadow:0 2px 12px rgba(0,0,0,0.4)}
+.card.dragging{opacity:.4;cursor:grabbing}
+.card-name{font-weight:600;font-size:13px;margin-bottom:4px;color:var(--text)}
+.card-meta{font-size:11px;color:var(--muted2);display:flex;flex-direction:column;gap:2px}
+.card-meta span{display:flex;align-items:center;gap:4px}
+.card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.card-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:100px;background:var(--bg4);color:var(--muted2);border:1px solid var(--border)}
+.card-tag.hot{background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.2)}
+.card-tag.warm{background:rgba(249,115,22,0.1);color:#f97316;border-color:rgba(249,115,22,0.2)}
+.card-tag.cold{background:rgba(59,130,246,0.1);color:#3b82f6;border-color:rgba(59,130,246,0.2)}
+.card-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.follow-badge{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:100px;background:var(--sol2);color:var(--sol);border:1px solid var(--sol3);cursor:pointer}
+.follow-badge.done{background:rgba(34,197,94,0.1);color:var(--green);border-color:rgba(34,197,94,0.2)}
+.card-edit-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:3px 5px;border-radius:4px;transition:all .15s}
+.card-edit-btn:hover{color:var(--text);background:var(--bg4)}
+
+/* DROP ZONE */
+.col-body.drag-over{background:var(--sol2);border-radius:8px}
+
+/* MODAL OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
+.overlay.hidden{display:none}
+
+/* MODAL */
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+.modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;background:var(--bg2);z-index:1}
+.modal-header h2{font-size:16px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:20px;line-height:1;padding:4px;border-radius:4px}
+.modal-close:hover{color:var(--text);background:var(--bg3)}
+.modal-body{padding:20px 24px;flex:1}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;position:sticky;bottom:0;background:var(--bg2)}
+
+/* FORM */
+.form-section{margin-bottom:20px}
+.form-section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sol);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--muted2);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;transition:border .15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--sol3)}
+.field textarea{resize:vertical;min-height:70px}
+.field select option{background:var(--bg3)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.custom-fields{display:flex;flex-direction:column;gap:8px}
+.custom-field-row{display:flex;gap:6px;align-items:center}
+.custom-field-row input{flex:1}
+.custom-field-row .remove-field{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px;border-radius:4px;flex-shrink:0}
+.custom-field-row .remove-field:hover{color:var(--red)}
+.add-field-btn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted2);cursor:pointer;border:none;background:none;padding:4px 0;margin-top:4px}
+.add-field-btn:hover{color:var(--sol)}
+
+/* FOLLOW UP SECTION */
+.follow-section{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:4px}
+.follow-section-title{font-size:12px;font-weight:600;color:var(--muted2);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.follow-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.follow-tick{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.follow-tick-box{width:32px;height:32px;border-radius:6px;border:1.5px solid var(--border2);background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);transition:all .15s}
+.follow-tick:hover .follow-tick-box{border-color:var(--sol3);color:var(--sol)}
+.follow-tick.done .follow-tick-box{background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.4);color:var(--green)}
+.follow-tick.pending .follow-tick-box{background:rgba(255,208,0,0.1);border-color:var(--sol3);color:var(--sol)}
+.follow-tick-label{font-size:9px;color:var(--muted);text-align:center;line-height:1.2}
+.follow-progress{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.follow-bar{flex:1;height:4px;background:var(--bg4);border-radius:10px;overflow:hidden}
+.follow-bar-fill{height:100%;background:var(--sol);border-radius:10px;transition:width .3s}
+.follow-progress-text{font-size:11px;color:var(--muted2);white-space:nowrap}
+
+/* COLUMN MODAL */
+.col-modal{max-width:360px}
+
+/* SETTINGS MODAL */
+.settings-modal{max-width:480px}
+.settings-field-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.settings-field-item{display:flex;gap:6px;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
+.settings-field-item span{flex:1;font-size:13px}
+.settings-field-item .fi-actions{display:flex;gap:4px}
+
+/* BADGES TEMPO */
+.badge-time{font-size:10px;padding:2px 6px;border-radius:100px;font-weight:600}
+.badge-time.urgent{background:rgba(239,68,68,0.12);color:#ef4444}
+.badge-time.soon{background:rgba(249,115,22,0.12);color:#f97316}
+.badge-time.ok{background:rgba(34,197,94,0.1);color:#22c55e}
+
+/* INPUT INLINE EDIT */
+.inline-edit{background:none;border:none;border-bottom:1px dashed var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:2px 4px;width:100%;outline:none}
+.inline-edit:focus{border-bottom-color:var(--sol)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">☀</div>
+    Solar CRM — Kanban Comercial
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost" onclick="openSettings()">⚙ Campos padrão</button>
+    <button class="btn btn-primary" onclick="openNewCard()">+ Novo lead</button>
+  </div>
+</div>
+
+<!-- BOARD -->
+<div class="board-wrap">
+  <div class="board" id="board">
+    <!-- colunas geradas por JS -->
+    <div class="add-col-btn" id="addColBtn" onclick="openColModal()">+ Nova etapa</div>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay hidden" id="overlay" onclick="closeOverlay(event)"></div>
+
+<!-- MODAL CARD -->
+<div class="overlay hidden" id="cardOverlay" onclick="closeCardOverlay(event)">
+  <div class="modal" id="cardModal" onclick="e=>e.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="cardModalTitle">Novo Lead</h2>
+      <button class="modal-close" onclick="closeCardModal()">✕</button>
+    </div>
+    <div class="modal-body" id="cardModalBody">
+      <!-- gerado por JS -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger hidden" id="cardDeleteBtn" onclick="deleteCard()">🗑 Excluir</button>
+      <button class="btn btn-ghost" onclick="closeCardModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveCard()">Salvar lead</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COLUNA -->
+<div class="overlay hidden" id="colOverlay" onclick="closeColOverlay(event)">
+  <div class="modal col-modal" onclick="e=>e.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="colModalTitle">Nova Etapa</h2>
+      <button class="modal-close" onclick="closeColModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Nome da etapa</label>
+        <input type="text" id="colNameInput" placeholder="Ex: Em negociação">
+      </div>
+      <div class="field">
+        <label>Cor</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="colorPicker">
+          <!-- gerado por JS -->
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger hidden" id="colDeleteBtn" onclick="deleteCol()">🗑 Excluir</button>
+      <button class="btn btn-ghost" onclick="closeColModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveCol()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SETTINGS -->
+<div class="overlay hidden" id="settingsOverlay" onclick="closeSettingsOverlay(event)">
+  <div class="modal settings-modal" onclick="e=>e.stopPropagation()">
+    <div class="modal-header">
+      <h2>Campos padrão do lead</h2>
+      <button class="modal-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted2);margin-bottom:16px">Esses campos aparecem para todos os leads. Você pode adicionar ou remover.</p>
+      <div class="settings-field-list" id="settingsFieldList"></div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="newFieldInput" placeholder="Nome do novo campo" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif" onkeydown="if(event.key==='Enter')addSettingsField()">
+        <button class="btn btn-primary" onclick="addSettingsField()">+ Adicionar</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeSettings()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════════════════════
+let state = {
+  columns: [
+    {id:'c1', name:'Leads de Entrada', color:'#6366f1'},
+    {id:'c2', name:'Em Qualificação', color:'#f59e0b'},
+    {id:'c3', name:'Qualificado', color:'#3b82f6'},
+    {id:'c4', name:'Orçamento Enviado', color:'#FFD000'},
+    {id:'c5', name:'Negociação', color:'#f97316'},
+    {id:'c6', name:'Projeto Fechado', color:'#22c55e'},
+    {id:'c7', name:'Financiamento', color:'#8b5cf6'},
+    {id:'c8', name:'Visita Agendada', color:'#06b6d4'},
+    {id:'c9', name:'Instalação Agendada', color:'#10b981'},
+    {id:'c10', name:'Suporte', color:'#64748b'},
+  ],
+  cards: [],
+  fields: [
+    {id:'f1', name:'Cidade / Bairro'},
+    {id:'f2', name:'Valor da conta de luz'},
+    {id:'f3', name:'Tipo de telhado'},
+    {id:'f4', name:'Padrão de entrada'},
+    {id:'f5', name:'Meio de pagamento'},
+    {id:'f6', name:'Telefone'},
+    {id:'f7', name:'Observações'},
+  ],
+  nextId: 100,
+};
+
+// Follow up labels
+const followLabels = [
+  'Dia 1','Dia 2','Dia 3','Dia 5','Dia 7','Dia 10','Dia 14',
+  'Dia 18','Dia 22','Dia 26','Dia 30','Dia 35','Dia 40','Dia 45'
+];
+
+const FOLLOW_COL_ID = 'c4'; // Orçamento Enviado
+
+// Cores disponíveis para colunas
+const colColors = [
+  '#6366f1','#3b82f6','#06b6d4','#10b981','#22c55e',
+  '#FFD000','#f97316','#ef4444','#ec4899','#8b5cf6',
+  '#f59e0b','#64748b','#0ea5e9','#84cc16','#14b8a6'
+];
+
+let selectedColor = '#6366f1';
+let editingColId = null;
+let editingCardId = null;
+let dragCardId = null;
+let dragFromCol = null;
+
+// ═══════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════
+function render() {
+  const board = document.getElementById('board');
+  const addBtn = document.getElementById('addColBtn');
+  board.innerHTML = '';
+
+  state.columns.forEach(col => {
+    const cards = state.cards.filter(c => c.colId === col.id);
+    const colEl = document.createElement('div');
+    colEl.className = 'col';
+    colEl.dataset.colId = col.id;
+
+    colEl.innerHTML = `
+      <div class="col-header">
+        <div class="col-title-wrap">
+          <div class="col-dot" style="background:${col.color}"></div>
+          <span class="col-title" title="${col.name}">${col.name}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="col-count">${cards.length}</span>
+          <div class="col-actions">
+            <button class="icon-btn" title="Editar etapa" onclick="openColEdit('${col.id}')">✏</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-body" id="col-body-${col.id}"
+        ondragover="dragOver(event,'${col.id}')"
+        ondragleave="dragLeave(event,'${col.id}')"
+        ondrop="drop(event,'${col.id}')">
+        ${cards.map(c => renderCard(c, col)).join('')}
+      </div>
+      <button class="add-card-btn" onclick="openNewCard('${col.id}')">
+        <span style="font-size:16px">+</span> Adicionar lead
+      </button>
+    `;
+    board.appendChild(colEl);
+  });
+
+  board.appendChild(addBtn);
+}
+
+function renderCard(card, col) {
+  const isFollowCol = col.id === FOLLOW_COL_ID;
+  const followDone = isFollowCol ? (card.followTicks || []).filter(Boolean).length : 0;
+  const followTotal = 14;
+  const followBadge = isFollowCol ? `
+    <div class="follow-badge ${followDone === followTotal ? 'done' : ''}" onclick="openCard('${card.id}',event)">
+      📋 ${followDone}/${followTotal}
+    </div>` : '';
+
+  const firstField = state.fields[0];
+  const fieldVal = firstField ? (card.fields[firstField.id] || '') : '';
+  const secondField = state.fields[1];
+  const field2Val = secondField ? (card.fields[secondField.id] || '') : '';
+
+  const temp = card.temperature || 'warm';
+  const tempLabel = {hot:'🔴 Quente',warm:'🟡 Morno',cold:'🔵 Frio'}[temp];
+
+  return `
+    <div class="card" id="card-${card.id}"
+      draggable="true"
+      ondragstart="dragStart(event,'${card.id}','${col.id}')"
+      ondragend="dragEnd(event)">
+      <div class="card-name">${card.name || 'Sem nome'}</div>
+      <div class="card-meta">
+        ${fieldVal ? `<span>📍 ${fieldVal}</span>` : ''}
+        ${field2Val ? `<span>💡 R$ ${field2Val}</span>` : ''}
+      </div>
+      <div class="card-tags">
+        <span class="card-tag ${temp}">${tempLabel}</span>
+        ${card.payment ? `<span class="card-tag">${card.payment}</span>` : ''}
+      </div>
+      <div class="card-bottom">
+        ${followBadge}
+        <div style="margin-left:auto">
+          <button class="card-edit-btn" onclick="openCard('${card.id}',event)">✏ Ver</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════
+// DRAG & DROP
+// ═══════════════════════════════════════════════════════
+function dragStart(e, cardId, colId) {
+  dragCardId = cardId;
+  dragFromCol = colId;
+  setTimeout(() => {
+    const el = document.getElementById('card-'+cardId);
+    if(el) el.classList.add('dragging');
+  }, 0);
+}
+function dragEnd(e) {
+  const el = document.getElementById('card-'+dragCardId);
+  if(el) el.classList.remove('dragging');
+}
+function dragOver(e, colId) {
+  e.preventDefault();
+  document.getElementById('col-body-'+colId)?.classList.add('drag-over');
+}
+function dragLeave(e, colId) {
+  document.getElementById('col-body-'+colId)?.classList.remove('drag-over');
+}
+function drop(e, colId) {
+  e.preventDefault();
+  document.getElementById('col-body-'+colId)?.classList.remove('drag-over');
+  if(!dragCardId) return;
+  const card = state.cards.find(c => c.id === dragCardId);
+  if(card) card.colId = colId;
+  dragCardId = null;
+  dragFromCol = null;
+  render();
+}
+
+// ═══════════════════════════════════════════════════════
+// CARD MODAL
+// ═══════════════════════════════════════════════════════
+function openNewCard(colId) {
+  editingCardId = null;
+  document.getElementById('cardModalTitle').textContent = 'Novo Lead';
+  document.getElementById('cardDeleteBtn').classList.add('hidden');
+  const defaultColId = colId || state.columns[0]?.id || '';
+  renderCardForm(null, defaultColId);
+  document.getElementById('cardOverlay').classList.remove('hidden');
+}
+
+function openCard(cardId, e) {
+  if(e) e.stopPropagation();
+  editingCardId = cardId;
+  const card = state.cards.find(c => c.id === cardId);
+  if(!card) return;
+  document.getElementById('cardModalTitle').textContent = card.name || 'Lead';
+  document.getElementById('cardDeleteBtn').classList.remove('hidden');
+  renderCardForm(card, card.colId);
+  document.getElementById('cardOverlay').classList.remove('hidden');
+}
+
+function renderCardForm(card, colId) {
+  const body = document.getElementById('cardModalBody');
+  const isFollowCol = colId === FOLLOW_COL_ID;
+  const followTicks = card?.followTicks || Array(14).fill(false);
+
+  body.innerHTML = `
+    <div class="form-section">
+      <div class="form-section-title">Informações do lead</div>
+      <div class="field">
+        <label>Nome do lead *</label>
+        <input type="text" id="cf-name" placeholder="Nome do cliente ou empresa" value="${card?.name || ''}">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Etapa</label>
+          <select id="cf-col">
+            ${state.columns.map(c => `<option value="${c.id}" ${c.id === colId ? 'selected':''}>${c.name}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Temperatura</label>
+          <select id="cf-temp">
+            <option value="hot" ${card?.temperature==='hot'?'selected':''}>🔴 Quente</option>
+            <option value="warm" ${(!card||card?.temperature==='warm')?'selected':''}>🟡 Morno</option>
+            <option value="cold" ${card?.temperature==='cold'?'selected':''}>🔵 Frio</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Pagamento</label>
+        <select id="cf-payment">
+          <option value="" ${!card?.payment?'selected':''}>Não definido</option>
+          <option value="Financiamento" ${card?.payment==='Financiamento'?'selected':''}>Financiamento</option>
+          <option value="À vista" ${card?.payment==='À vista'?'selected':''}>À vista</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">
+        Dados de qualificação
+      </div>
+      ${state.fields.map(f => `
+        <div class="field">
+          <label>${f.name}</label>
+          <input type="text" id="cf-field-${f.id}" placeholder="${f.name}" value="${card?.fields?.[f.id] || ''}">
+        </div>
+      `).join('')}
+      <div class="custom-fields" id="customFieldsWrap">
+        ${(card?.customFields || []).map((cf,i) => `
+          <div class="custom-field-row" id="cfrow-${i}">
+            <input type="text" placeholder="Campo" value="${cf.label}" oninput="updateCustomFieldLabel(${i},this.value)">
+            <input type="text" placeholder="Valor" value="${cf.value}" oninput="updateCustomFieldValue(${i},this.value)">
+            <button class="remove-field" onclick="removeCustomField(${i})">✕</button>
+          </div>
+        `).join('')}
+      </div>
+      <button class="add-field-btn" onclick="addCustomField()">+ Adicionar campo extra</button>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Observações</div>
+      <div class="field">
+        <textarea id="cf-notes" placeholder="Anotações sobre o lead...">${card?.notes || ''}</textarea>
+      </div>
+    </div>
+
+    ${isFollowCol ? `
+    <div class="form-section">
+      <div class="form-section-title">📋 Follow Up Pós-Proposta — 45 dias</div>
+      <div class="follow-section">
+        <div class="follow-progress">
+          <div class="follow-bar">
+            <div class="follow-bar-fill" id="followBarFill" style="width:${(followTicks.filter(Boolean).length/14*100)}%"></div>
+          </div>
+          <span class="follow-progress-text" id="followProgressText">${followTicks.filter(Boolean).length}/14 realizados</span>
+        </div>
+        <div class="follow-grid" id="followGrid">
+          ${followLabels.map((label,i) => `
+            <div class="follow-tick ${followTicks[i]?'done':''}" id="ftick-${i}" onclick="toggleTick(${i})">
+              <div class="follow-tick-box">${followTicks[i]?'✓':(i+1)}</div>
+              <div class="follow-tick-label">${label}</div>
+            </div>
+          `).join('')}
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-top:12px">Clique em cada dia para marcar como realizado</p>
+      </div>
+    </div>
+    ` : ''}
+  `;
+
+  // guarda custom fields em memória temporária
+  window._tmpCustomFields = card?.customFields ? JSON.parse(JSON.stringify(card.customFields)) : [];
+  window._tmpFollowTicks = [...followTicks];
+
+  // listener do select de etapa para mostrar/esconder follow up
+  document.getElementById('cf-col').addEventListener('change', function() {
+    const newCol = this.value;
+    const isNowFollow = newCol === FOLLOW_COL_ID;
+    // re-render mostrando ou não o follow up
+    const fakeCard = getCurrentFormData();
+    fakeCard.colId = newCol;
+    renderCardForm(fakeCard, newCol);
+  });
+}
+
+function toggleTick(i) {
+  window._tmpFollowTicks[i] = !window._tmpFollowTicks[i];
+  const tick = document.getElementById('ftick-'+i);
+  const box = tick.querySelector('.follow-tick-box');
+  const done = window._tmpFollowTicks[i];
+  tick.className = 'follow-tick' + (done?' done':'');
+  box.textContent = done ? '✓' : (i+1);
+  const total = window._tmpFollowTicks.filter(Boolean).length;
+  document.getElementById('followBarFill').style.width = (total/14*100)+'%';
+  document.getElementById('followProgressText').textContent = total+'/14 realizados';
+}
+
+function addCustomField() {
+  window._tmpCustomFields.push({label:'', value:''});
+  const wrap = document.getElementById('customFieldsWrap');
+  const i = window._tmpCustomFields.length-1;
+  const row = document.createElement('div');
+  row.className = 'custom-field-row';
+  row.id = 'cfrow-'+i;
+  row.innerHTML = `
+    <input type="text" placeholder="Campo" oninput="updateCustomFieldLabel(${i},this.value)">
+    <input type="text" placeholder="Valor" oninput="updateCustomFieldValue(${i},this.value)">
+    <button class="remove-field" onclick="removeCustomField(${i})">✕</button>
+  `;
+  wrap.appendChild(row);
+}
+function updateCustomFieldLabel(i,v){ if(window._tmpCustomFields[i]) window._tmpCustomFields[i].label=v; }
+function updateCustomFieldValue(i,v){ if(window._tmpCustomFields[i]) window._tmpCustomFields[i].value=v; }
+function removeCustomField(i){
+  window._tmpCustomFields[i] = null;
+  const row = document.getElementById('cfrow-'+i);
+  if(row) row.remove();
+}
+
+function getCurrentFormData() {
+  const fields = {};
+  state.fields.forEach(f => {
+    const el = document.getElementById('cf-field-'+f.id);
+    if(el) fields[f.id] = el.value;
+  });
+  return {
+    name: document.getElementById('cf-name')?.value || '',
+    colId: document.getElementById('cf-col')?.value || state.columns[0]?.id,
+    temperature: document.getElementById('cf-temp')?.value || 'warm',
+    payment: document.getElementById('cf-payment')?.value || '',
+    notes: document.getElementById('cf-notes')?.value || '',
+    fields,
+    customFields: (window._tmpCustomFields||[]).filter(Boolean),
+    followTicks: window._tmpFollowTicks || Array(14).fill(false),
+  };
+}
+
+function saveCard() {
+  const data = getCurrentFormData();
+  if(!data.name.trim()){ alert('Informe o nome do lead'); return; }
+
+  if(editingCardId) {
+    const idx = state.cards.findIndex(c => c.id === editingCardId);
+    if(idx>=0) state.cards[idx] = {...state.cards[idx], ...data};
+  } else {
+    state.cards.push({id:'card-'+state.nextId++, ...data});
+  }
+  closeCardModal();
+  render();
+}
+
+function deleteCard() {
+  if(!editingCardId) return;
+  if(!confirm('Excluir este lead?')) return;
+  state.cards = state.cards.filter(c => c.id !== editingCardId);
+  closeCardModal();
+  render();
+}
+
+function closeCardModal() {
+  document.getElementById('cardOverlay').classList.add('hidden');
+  editingCardId = null;
+}
+function closeCardOverlay(e) {
+  if(e.target === document.getElementById('cardOverlay')) closeCardModal();
+}
+
+// ═══════════════════════════════════════════════════════
+// COLUMN MODAL
+// ═══════════════════════════════════════════════════════
+function openColModal() {
+  editingColId = null;
+  document.getElementById('colModalTitle').textContent = 'Nova Etapa';
+  document.getElementById('colNameInput').value = '';
+  document.getElementById('colDeleteBtn').classList.add('hidden');
+  selectedColor = colColors[0];
+  renderColorPicker();
+  document.getElementById('colOverlay').classList.remove('hidden');
+}
+
+function openColEdit(colId) {
+  editingColId = colId;
+  const col = state.columns.find(c => c.id === colId);
+  if(!col) return;
+  document.getElementById('colModalTitle').textContent = 'Editar Etapa';
+  document.getElementById('colNameInput').value = col.name;
+  document.getElementById('colDeleteBtn').classList.remove('hidden');
+  selectedColor = col.color;
+  renderColorPicker();
+  document.getElementById('colOverlay').classList.remove('hidden');
+}
+
+function renderColorPicker() {
+  const wrap = document.getElementById('colorPicker');
+  wrap.innerHTML = colColors.map(c => `
+    <div onclick="selectColor('${c}')" style="
+      width:28px;height:28px;border-radius:50%;background:${c};cursor:pointer;
+      border:3px solid ${c===selectedColor?'#fff':'transparent'};
+      box-shadow:${c===selectedColor?'0 0 0 2px '+c:'none'};
+      transition:all .15s
+    "></div>
+  `).join('');
+}
+
+function selectColor(c) { selectedColor=c; renderColorPicker(); }
+
+function saveCol() {
+  const name = document.getElementById('colNameInput').value.trim();
+  if(!name){ alert('Informe o nome da etapa'); return; }
+  if(editingColId) {
+    const col = state.columns.find(c => c.id === editingColId);
+    if(col){ col.name=name; col.color=selectedColor; }
+  } else {
+    state.columns.push({id:'col-'+state.nextId++, name, color:selectedColor});
+  }
+  closeColModal();
+  render();
+}
+
+function deleteCol() {
+  if(!editingColId) return;
+  const hasCards = state.cards.some(c => c.colId === editingColId);
+  if(hasCards && !confirm('Essa etapa tem leads. Excluir mesmo assim? Os leads serão removidos.')) return;
+  if(!hasCards && !confirm('Excluir essa etapa?')) return;
+  state.columns = state.columns.filter(c => c.id !== editingColId);
+  state.cards = state.cards.filter(c => c.colId !== editingColId);
+  closeColModal();
+  render();
+}
+
+function closeColModal() {
+  document.getElementById('colOverlay').classList.add('hidden');
+  editingColId = null;
+}
+function closeColOverlay(e) {
+  if(e.target === document.getElementById('colOverlay')) closeColModal();
+}
+
+// ═══════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════
+function openSettings() {
+  renderSettingsFields();
+  document.getElementById('settingsOverlay').classList.remove('hidden');
+}
+
+function renderSettingsFields() {
+  const list = document.getElementById('settingsFieldList');
+  list.innerHTML = state.fields.map((f,i) => `
+    <div class="settings-field-item">
+      <span>${f.name}</span>
+      <div class="fi-actions">
+        ${i>0?`<button class="icon-btn" onclick="moveField(${i},-1)" title="Subir">↑</button>`:''}
+        ${i<state.fields.length-1?`<button class="icon-btn" onclick="moveField(${i},1)" title="Descer">↓</button>`:''}
+        <button class="icon-btn" onclick="removeSettingsField('${f.id}')" title="Remover" style="color:var(--red)">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addSettingsField() {
+  const input = document.getElementById('newFieldInput');
+  const name = input.value.trim();
+  if(!name) return;
+  state.fields.push({id:'f'+state.nextId++, name});
+  input.value = '';
+  renderSettingsFields();
+}
+
+function removeSettingsField(id) {
+  state.fields = state.fields.filter(f => f.id !== id);
+  renderSettingsFields();
+}
+
+function moveField(i, dir) {
+  const j = i+dir;
+  if(j<0||j>=state.fields.length) return;
+  [state.fields[i],state.fields[j]] = [state.fields[j],state.fields[i]];
+  renderSettingsFields();
+}
+
+function closeSettings() {
+  document.getElementById('settingsOverlay').classList.add('hidden');
+  render();
+}
+function closeSettingsOverlay(e) {
+  if(e.target===document.getElementById('settingsOverlay')) closeSettings();
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
