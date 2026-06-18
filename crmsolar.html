@@ -8,31 +8,19 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0a0a0a;
-  --bg2:#111;
-  --bg3:#1a1a1a;
-  --bg4:#222;
-  --border:#2a2a2a;
-  --border2:#333;
-  --text:#f0f0f0;
-  --muted:#666;
-  --muted2:#888;
-  --sol:#FFD000;
-  --sol2:rgba(255,208,0,0.12);
-  --sol3:rgba(255,208,0,0.25);
-  --green:#22c55e;
-  --red:#ef4444;
-  --blue:#3b82f6;
-  --orange:#f97316;
-  --radius:8px;
+  --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--bg4:#222;
+  --border:#2a2a2a;--border2:#333;
+  --text:#f0f0f0;--muted:#666;--muted2:#888;
+  --sol:#FFD000;--sol2:rgba(255,208,0,0.12);--sol3:rgba(255,208,0,0.25);
+  --green:#22c55e;--red:#ef4444;--blue:#3b82f6;--orange:#f97316;
 }
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
 /* HEADER */
-.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;flex-shrink:0}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;flex-shrink:0;z-index:10}
 .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
 .logo-icon{background:var(--sol);color:#000;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
-.header-actions{display:flex;gap:8px;align-items:center}
+.header-right{display:flex;gap:8px;align-items:center}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s}
 .btn-primary{background:var(--sol);color:#000}
 .btn-primary:hover{background:#e6bc00}
@@ -41,9 +29,46 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .btn-danger{background:transparent;color:var(--red);border:1px solid rgba(239,68,68,0.3)}
 .btn-danger:hover{background:rgba(239,68,68,0.1)}
 
+/* NOTIF BELL */
+.notif-btn{position:relative;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:7px 14px;cursor:pointer;display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--text);transition:all .15s}
+.notif-btn:hover{border-color:var(--sol3);background:var(--sol2)}
+.notif-btn.active{border-color:var(--sol);background:var(--sol2);color:var(--sol)}
+.notif-dot{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
+
+/* LAYOUT COM PAINEL */
+.main-wrap{flex:1;display:flex;overflow:hidden}
+
 /* BOARD */
-.board-wrap{flex:1;overflow-x:auto;overflow-y:hidden;padding:16px 20px 20px}
+.board-wrap{flex:1;overflow-x:auto;overflow-y:hidden;padding:16px 20px 20px;transition:all .3s}
 .board{display:flex;gap:12px;height:100%;align-items:flex-start}
+
+/* PAINEL LATERAL */
+.tasks-panel{width:0;overflow:hidden;transition:width .3s ease;flex-shrink:0;border-left:1px solid var(--border);background:var(--bg2)}
+.tasks-panel.open{width:320px}
+.tasks-inner{width:320px;height:100%;display:flex;flex-direction:column;overflow:hidden}
+.tasks-header{padding:16px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.tasks-header h3{font-size:14px;font-weight:700;margin-bottom:2px}
+.tasks-header p{font-size:11px;color:var(--muted2)}
+.tasks-list{flex:1;overflow-y:auto;padding:10px}
+.tasks-list::-webkit-scrollbar{width:3px}
+.tasks-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+.task-group{margin-bottom:16px}
+.task-group-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:0 4px;margin-bottom:8px}
+.task-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:6px;cursor:pointer;transition:all .15s}
+.task-item:hover{border-color:var(--sol3);background:var(--sol2)}
+.task-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.task-lead-name{font-weight:600;font-size:13px;line-height:1.3}
+.task-urgency{font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;white-space:nowrap;flex-shrink:0}
+.task-urgency.high{background:rgba(239,68,68,0.12);color:#ef4444}
+.task-urgency.med{background:rgba(249,115,22,0.12);color:#f97316}
+.task-urgency.low{background:rgba(34,197,94,0.1);color:#22c55e}
+.task-action{font-size:12px;color:var(--muted2);line-height:1.4}
+.task-action strong{color:var(--sol);font-weight:600}
+.task-col{font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px}
+.task-col-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.task-empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.task-empty .task-empty-icon{font-size:32px;margin-bottom:8px}
+.task-empty p{font-size:13px}
 
 /* COLUNA */
 .col{background:var(--bg2);border:1px solid var(--border);border-radius:10px;width:260px;min-width:260px;display:flex;flex-direction:column;max-height:100%}
@@ -52,17 +77,13 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .col-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .col-title{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .col-count{background:var(--bg4);color:var(--muted2);font-size:11px;font-weight:600;padding:2px 7px;border-radius:100px;flex-shrink:0}
-.col-actions{display:flex;gap:4px;flex-shrink:0}
 .icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;border-radius:4px;font-size:14px;line-height:1;transition:all .15s}
 .icon-btn:hover{background:var(--bg3);color:var(--text)}
 .col-body{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
 .col-body::-webkit-scrollbar{width:3px}
-.col-body::-webkit-scrollbar-track{background:transparent}
 .col-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
 .add-card-btn{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:6px;color:var(--muted);font-size:13px;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all .15s;flex-shrink:0;margin:4px 10px 10px}
 .add-card-btn:hover{background:var(--bg3);color:var(--text)}
-
-/* ADD COLUMN */
 .add-col-btn{background:var(--bg2);border:1px dashed var(--border2);border-radius:10px;width:220px;min-width:220px;height:60px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:13px;cursor:pointer;transition:all .15s;flex-shrink:0}
 .add-col-btn:hover{border-color:var(--sol3);color:var(--sol);background:var(--sol2)}
 
@@ -70,9 +91,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;cursor:grab;transition:all .15s;position:relative}
 .card:hover{border-color:var(--border2);box-shadow:0 2px 12px rgba(0,0,0,0.4)}
 .card.dragging{opacity:.4;cursor:grabbing}
-.card-name{font-weight:600;font-size:13px;margin-bottom:4px;color:var(--text)}
+.card.has-alert{border-color:rgba(255,208,0,0.3)}
+.card-name{font-weight:600;font-size:13px;margin-bottom:4px;color:var(--text);padding-right:22px}
 .card-meta{font-size:11px;color:var(--muted2);display:flex;flex-direction:column;gap:2px}
-.card-meta span{display:flex;align-items:center;gap:4px}
 .card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
 .card-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:100px;background:var(--bg4);color:var(--muted2);border:1px solid var(--border)}
 .card-tag.hot{background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.2)}
@@ -84,14 +105,16 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .card-edit-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:3px 5px;border-radius:4px;transition:all .15s}
 .card-edit-btn:hover{color:var(--text);background:var(--bg4)}
 
-/* DROP ZONE */
+/* ALERTA ! no card */
+.card-alert{position:absolute;top:10px;right:10px;width:18px;height:18px;background:var(--sol);color:#000;border-radius:50%;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.15)}}
+
+/* DRAG */
 .col-body.drag-over{background:var(--sol2);border-radius:8px}
 
-/* MODAL OVERLAY */
+/* MODAIS */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
 .overlay.hidden{display:none}
-
-/* MODAL */
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
 .modal::-webkit-scrollbar{width:4px}
 .modal::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
@@ -101,10 +124,12 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .modal-close:hover{color:var(--text);background:var(--bg3)}
 .modal-body{padding:20px 24px;flex:1}
 .modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;position:sticky;bottom:0;background:var(--bg2)}
+.col-modal{max-width:360px}
+.settings-modal{max-width:480px}
 
 /* FORM */
 .form-section{margin-bottom:20px}
-.form-section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sol);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.form-section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sol);margin-bottom:12px}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:12px;font-weight:500;color:var(--muted2);margin-bottom:5px}
 .field input,.field select,.field textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;transition:border .15s}
@@ -115,45 +140,29 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .custom-fields{display:flex;flex-direction:column;gap:8px}
 .custom-field-row{display:flex;gap:6px;align-items:center}
 .custom-field-row input{flex:1}
-.custom-field-row .remove-field{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px;border-radius:4px;flex-shrink:0}
-.custom-field-row .remove-field:hover{color:var(--red)}
+.remove-field{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px;border-radius:4px;flex-shrink:0}
+.remove-field:hover{color:var(--red)}
 .add-field-btn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted2);cursor:pointer;border:none;background:none;padding:4px 0;margin-top:4px}
 .add-field-btn:hover{color:var(--sol)}
 
-/* FOLLOW UP SECTION */
+/* FOLLOW UP */
 .follow-section{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:4px}
-.follow-section-title{font-size:12px;font-weight:600;color:var(--muted2);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.follow-progress{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.follow-bar{flex:1;height:4px;background:var(--bg4);border-radius:10px;overflow:hidden}
+.follow-bar-fill{height:100%;background:var(--sol);border-radius:10px;transition:width .3s}
+.follow-progress-text{font-size:11px;color:var(--muted2);white-space:nowrap}
 .follow-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
 .follow-tick{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
 .follow-tick-box{width:32px;height:32px;border-radius:6px;border:1.5px solid var(--border2);background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);transition:all .15s}
 .follow-tick:hover .follow-tick-box{border-color:var(--sol3);color:var(--sol)}
 .follow-tick.done .follow-tick-box{background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.4);color:var(--green)}
-.follow-tick.pending .follow-tick-box{background:rgba(255,208,0,0.1);border-color:var(--sol3);color:var(--sol)}
 .follow-tick-label{font-size:9px;color:var(--muted);text-align:center;line-height:1.2}
-.follow-progress{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.follow-bar{flex:1;height:4px;background:var(--bg4);border-radius:10px;overflow:hidden}
-.follow-bar-fill{height:100%;background:var(--sol);border-radius:10px;transition:width .3s}
-.follow-progress-text{font-size:11px;color:var(--muted2);white-space:nowrap}
 
-/* COLUMN MODAL */
-.col-modal{max-width:360px}
-
-/* SETTINGS MODAL */
-.settings-modal{max-width:480px}
+/* SETTINGS */
 .settings-field-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
 .settings-field-item{display:flex;gap:6px;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
 .settings-field-item span{flex:1;font-size:13px}
-.settings-field-item .fi-actions{display:flex;gap:4px}
-
-/* BADGES TEMPO */
-.badge-time{font-size:10px;padding:2px 6px;border-radius:100px;font-weight:600}
-.badge-time.urgent{background:rgba(239,68,68,0.12);color:#ef4444}
-.badge-time.soon{background:rgba(249,115,22,0.12);color:#f97316}
-.badge-time.ok{background:rgba(34,197,94,0.1);color:#22c55e}
-
-/* INPUT INLINE EDIT */
-.inline-edit{background:none;border:none;border-bottom:1px dashed var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:2px 4px;width:100%;outline:none}
-.inline-edit:focus{border-bottom-color:var(--sol)}
+.fi-actions{display:flex;gap:4px}
 </style>
 </head>
 <body>
@@ -164,33 +173,47 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <div class="logo-icon">☀</div>
     Solar CRM — Kanban Comercial
   </div>
-  <div class="header-actions">
-    <button class="btn btn-ghost" onclick="openSettings()">⚙ Campos padrão</button>
+  <div class="header-right">
+    <button class="btn btn-ghost" onclick="openSettings()">⚙ Campos</button>
+    <button class="notif-btn" id="notifBtn" onclick="togglePanel()">
+      🔔 Tarefas
+      <span class="notif-dot hidden" id="notifDot">0</span>
+    </button>
     <button class="btn btn-primary" onclick="openNewCard()">+ Novo lead</button>
   </div>
 </div>
 
-<!-- BOARD -->
-<div class="board-wrap">
-  <div class="board" id="board">
-    <!-- colunas geradas por JS -->
-    <div class="add-col-btn" id="addColBtn" onclick="openColModal()">+ Nova etapa</div>
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- BOARD -->
+  <div class="board-wrap">
+    <div class="board" id="board">
+      <div class="add-col-btn" id="addColBtn" onclick="openColModal()">+ Nova etapa</div>
+    </div>
   </div>
+
+  <!-- PAINEL TAREFAS -->
+  <div class="tasks-panel" id="tasksPanel">
+    <div class="tasks-inner">
+      <div class="tasks-header">
+        <h3>📋 Tarefas pendentes</h3>
+        <p>Clique em qualquer tarefa para abrir o lead</p>
+      </div>
+      <div class="tasks-list" id="tasksList"></div>
+    </div>
+  </div>
+
 </div>
 
-<!-- OVERLAY -->
-<div class="overlay hidden" id="overlay" onclick="closeOverlay(event)"></div>
-
-<!-- MODAL CARD -->
+<!-- OVERLAY CARD -->
 <div class="overlay hidden" id="cardOverlay" onclick="closeCardOverlay(event)">
   <div class="modal" id="cardModal" onclick="e=>e.stopPropagation()">
     <div class="modal-header">
       <h2 id="cardModalTitle">Novo Lead</h2>
       <button class="modal-close" onclick="closeCardModal()">✕</button>
     </div>
-    <div class="modal-body" id="cardModalBody">
-      <!-- gerado por JS -->
-    </div>
+    <div class="modal-body" id="cardModalBody"></div>
     <div class="modal-footer">
       <button class="btn btn-danger hidden" id="cardDeleteBtn" onclick="deleteCard()">🗑 Excluir</button>
       <button class="btn btn-ghost" onclick="closeCardModal()">Cancelar</button>
@@ -199,7 +222,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   </div>
 </div>
 
-<!-- MODAL COLUNA -->
+<!-- OVERLAY COLUNA -->
 <div class="overlay hidden" id="colOverlay" onclick="closeColOverlay(event)">
   <div class="modal col-modal" onclick="e=>e.stopPropagation()">
     <div class="modal-header">
@@ -207,16 +230,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
       <button class="modal-close" onclick="closeColModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="field">
-        <label>Nome da etapa</label>
-        <input type="text" id="colNameInput" placeholder="Ex: Em negociação">
-      </div>
-      <div class="field">
-        <label>Cor</label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="colorPicker">
-          <!-- gerado por JS -->
-        </div>
-      </div>
+      <div class="field"><label>Nome da etapa</label><input type="text" id="colNameInput" placeholder="Ex: Em negociação"></div>
+      <div class="field"><label>Cor</label><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="colorPicker"></div></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-danger hidden" id="colDeleteBtn" onclick="deleteCol()">🗑 Excluir</button>
@@ -226,7 +241,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   </div>
 </div>
 
-<!-- MODAL SETTINGS -->
+<!-- OVERLAY SETTINGS -->
 <div class="overlay hidden" id="settingsOverlay" onclick="closeSettingsOverlay(event)">
   <div class="modal settings-modal" onclick="e=>e.stopPropagation()">
     <div class="modal-header">
@@ -234,7 +249,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
       <button class="modal-close" onclick="closeSettings()">✕</button>
     </div>
     <div class="modal-body">
-      <p style="font-size:13px;color:var(--muted2);margin-bottom:16px">Esses campos aparecem para todos os leads. Você pode adicionar ou remover.</p>
+      <p style="font-size:13px;color:var(--muted2);margin-bottom:16px">Esses campos aparecem em todos os leads.</p>
       <div class="settings-field-list" id="settingsFieldList"></div>
       <div style="display:flex;gap:8px">
         <input type="text" id="newFieldInput" placeholder="Nome do novo campo" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif" onkeydown="if(event.key==='Enter')addSettingsField()">
@@ -248,21 +263,39 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════
 // ESTADO
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════
+const FOLLOW_COL = 'c4';
+const followLabels = ['Dia 1','Dia 2','Dia 3','Dia 5','Dia 7','Dia 10','Dia 14','Dia 18','Dia 22','Dia 26','Dia 30','Dia 35','Dia 40','Dia 45'];
+const colColors = ['#6366f1','#3b82f6','#06b6d4','#10b981','#22c55e','#FFD000','#f97316','#ef4444','#ec4899','#8b5cf6','#f59e0b','#64748b'];
+
+// Ação sugerida por etapa
+const colActions = {
+  c1: {text:'Responder o lead em até 1h', urgency:'high', label:'🚨 Urgente'},
+  c2: {text:'Concluir qualificação — enviar perguntas pendentes', urgency:'high', label:'🚨 Urgente'},
+  c3: {text:'Ligar e tentar agendar visita técnica', urgency:'med', label:'⚡ Esta semana'},
+  c4: {text:'Enviar próximo follow up da cadência', urgency:'med', label:'⚡ Acompanhar'},
+  c5: {text:'Retomar negociação — verificar objeção pendente', urgency:'high', label:'🚨 Urgente'},
+  c6: {text:'Confirmar início do processo de financiamento', urgency:'med', label:'⚡ Esta semana'},
+  c7: {text:'Acompanhar aprovação do financiamento', urgency:'low', label:'✅ Monitorar'},
+  c8: {text:'Confirmar data e horário da visita técnica', urgency:'med', label:'⚡ Confirmar'},
+  c9: {text:'Confirmar data e equipe de instalação', urgency:'med', label:'⚡ Confirmar'},
+  c10:{text:'Verificar satisfação pós-instalação', urgency:'low', label:'✅ Monitorar'},
+};
+
 let state = {
   columns: [
-    {id:'c1', name:'Leads de Entrada', color:'#6366f1'},
-    {id:'c2', name:'Em Qualificação', color:'#f59e0b'},
-    {id:'c3', name:'Qualificado', color:'#3b82f6'},
-    {id:'c4', name:'Orçamento Enviado', color:'#FFD000'},
-    {id:'c5', name:'Negociação', color:'#f97316'},
-    {id:'c6', name:'Projeto Fechado', color:'#22c55e'},
-    {id:'c7', name:'Financiamento', color:'#8b5cf6'},
-    {id:'c8', name:'Visita Agendada', color:'#06b6d4'},
-    {id:'c9', name:'Instalação Agendada', color:'#10b981'},
-    {id:'c10', name:'Suporte', color:'#64748b'},
+    {id:'c1', name:'Leads de Entrada',    color:'#6366f1'},
+    {id:'c2', name:'Em Qualificação',      color:'#f59e0b'},
+    {id:'c3', name:'Qualificado',          color:'#3b82f6'},
+    {id:'c4', name:'Orçamento Enviado',    color:'#FFD000'},
+    {id:'c5', name:'Negociação',           color:'#f97316'},
+    {id:'c6', name:'Projeto Fechado',      color:'#22c55e'},
+    {id:'c7', name:'Financiamento',        color:'#8b5cf6'},
+    {id:'c8', name:'Visita Agendada',      color:'#06b6d4'},
+    {id:'c9', name:'Instalação Agendada',  color:'#10b981'},
+    {id:'c10',name:'Suporte',              color:'#64748b'},
   ],
   cards: [],
   fields: [
@@ -275,32 +308,121 @@ let state = {
     {id:'f7', name:'Observações'},
   ],
   nextId: 100,
+  panelOpen: false,
 };
 
-// Follow up labels
-const followLabels = [
-  'Dia 1','Dia 2','Dia 3','Dia 5','Dia 7','Dia 10','Dia 14',
-  'Dia 18','Dia 22','Dia 26','Dia 30','Dia 35','Dia 40','Dia 45'
-];
+let selectedColor='#6366f1', editingColId=null, editingCardId=null;
+let dragCardId=null;
 
-const FOLLOW_COL_ID = 'c4'; // Orçamento Enviado
+// ═══════════════════════════════════
+// TAREFAS
+// ═══════════════════════════════════
+function getCardTasks() {
+  const tasks = [];
+  state.cards.forEach(card => {
+    const col = state.columns.find(c => c.id === card.colId);
+    if(!col) return;
+    const action = colActions[card.colId];
+    if(!action) return;
 
-// Cores disponíveis para colunas
-const colColors = [
-  '#6366f1','#3b82f6','#06b6d4','#10b981','#22c55e',
-  '#FFD000','#f97316','#ef4444','#ec4899','#8b5cf6',
-  '#f59e0b','#64748b','#0ea5e9','#84cc16','#14b8a6'
-];
+    let taskText = action.text;
+    // se orçamento enviado, descobre qual follow up é o próximo
+    if(card.colId === FOLLOW_COL) {
+      const ticks = card.followTicks || Array(14).fill(false);
+      const next = ticks.findIndex(t => !t);
+      if(next === -1) { taskText = 'Todos os follow ups realizados ✓'; }
+      else { taskText = `Enviar follow up — ${followLabels[next]}`; }
+    }
 
-let selectedColor = '#6366f1';
-let editingColId = null;
-let editingCardId = null;
-let dragCardId = null;
-let dragFromCol = null;
+    tasks.push({
+      cardId: card.id,
+      cardName: card.name || 'Sem nome',
+      colName: col.name,
+      colColor: col.color,
+      taskText,
+      urgency: action.urgency,
+      urgencyLabel: action.label,
+    });
+  });
 
-// ═══════════════════════════════════════════════════════
-// RENDER
-// ═══════════════════════════════════════════════════════
+  // ordena: high → med → low
+  const order = {high:0, med:1, low:2};
+  tasks.sort((a,b) => order[a.urgency] - order[b.urgency]);
+  return tasks;
+}
+
+function renderTasksPanel() {
+  const tasks = getCardTasks();
+  const list = document.getElementById('tasksList');
+  const dot = document.getElementById('notifDot');
+  const urgent = tasks.filter(t => t.urgency === 'high').length;
+
+  // dot
+  if(tasks.length > 0) {
+    dot.classList.remove('hidden');
+    dot.textContent = urgent > 0 ? urgent : tasks.length;
+  } else {
+    dot.classList.add('hidden');
+  }
+
+  if(tasks.length === 0) {
+    list.innerHTML = `<div class="task-empty"><div class="task-empty-icon">🎉</div><p>Nenhuma tarefa pendente.<br>Adicione leads para começar.</p></div>`;
+    return;
+  }
+
+  const groups = {high:[], med:[], low:[]};
+  tasks.forEach(t => groups[t.urgency].push(t));
+
+  let html = '';
+  if(groups.high.length) {
+    html += `<div class="task-group"><div class="task-group-label">🚨 Urgente</div>`;
+    html += groups.high.map(t => taskItemHTML(t)).join('');
+    html += `</div>`;
+  }
+  if(groups.med.length) {
+    html += `<div class="task-group"><div class="task-group-label">⚡ Acompanhar</div>`;
+    html += groups.med.map(t => taskItemHTML(t)).join('');
+    html += `</div>`;
+  }
+  if(groups.low.length) {
+    html += `<div class="task-group"><div class="task-group-label">✅ Monitorar</div>`;
+    html += groups.low.map(t => taskItemHTML(t)).join('');
+    html += `</div>`;
+  }
+  list.innerHTML = html;
+}
+
+function taskItemHTML(t) {
+  return `
+    <div class="task-item" onclick="openCardFromTask('${t.cardId}')">
+      <div class="task-item-top">
+        <div class="task-lead-name">${t.cardName}</div>
+        <span class="task-urgency ${t.urgency}">${t.urgencyLabel}</span>
+      </div>
+      <div class="task-action"><strong>→</strong> ${t.taskText}</div>
+      <div class="task-col">
+        <div class="task-col-dot" style="background:${t.colColor}"></div>
+        ${t.colName}
+      </div>
+    </div>
+  `;
+}
+
+function openCardFromTask(cardId) {
+  // fecha painel, abre o card
+  openCard(cardId);
+}
+
+function togglePanel() {
+  state.panelOpen = !state.panelOpen;
+  document.getElementById('tasksPanel').classList.toggle('open', state.panelOpen);
+  document.getElementById('notifBtn').classList.toggle('active', state.panelOpen);
+  if(state.panelOpen) renderTasksPanel();
+}
+
+// ═══════════════════════════════════
+// RENDER BOARD
+// ═══════════════════════════════════
 function render() {
   const board = document.getElementById('board');
   const addBtn = document.getElementById('addColBtn');
@@ -320,9 +442,7 @@ function render() {
         </div>
         <div style="display:flex;align-items:center;gap:6px">
           <span class="col-count">${cards.length}</span>
-          <div class="col-actions">
-            <button class="icon-btn" title="Editar etapa" onclick="openColEdit('${col.id}')">✏</button>
-          </div>
+          <button class="icon-btn" title="Editar etapa" onclick="openColEdit('${col.id}')">✏</button>
         </div>
       </div>
       <div class="col-body" id="col-body-${col.id}"
@@ -339,34 +459,40 @@ function render() {
   });
 
   board.appendChild(addBtn);
+  renderTasksPanel();
 }
 
 function renderCard(card, col) {
-  const isFollowCol = col.id === FOLLOW_COL_ID;
-  const followDone = isFollowCol ? (card.followTicks || []).filter(Boolean).length : 0;
-  const followTotal = 14;
+  const isFollowCol = col.id === FOLLOW_COL;
+  const ticks = card.followTicks || Array(14).fill(false);
+  const followDone = ticks.filter(Boolean).length;
+  const nextFollowIdx = ticks.findIndex(t => !t);
+
+  const hasAlert = !!colActions[col.id];
+  const action = colActions[col.id];
+
+  const fieldVal = state.fields[0] ? (card.fields?.[state.fields[0].id] || '') : '';
+  const field2Val = state.fields[1] ? (card.fields?.[state.fields[1].id] || '') : '';
+  const temp = card.temperature || 'warm';
+  const tempLabel = {hot:'🔴 Quente', warm:'🟡 Morno', cold:'🔵 Frio'}[temp];
+
   const followBadge = isFollowCol ? `
-    <div class="follow-badge ${followDone === followTotal ? 'done' : ''}" onclick="openCard('${card.id}',event)">
-      📋 ${followDone}/${followTotal}
+    <div class="follow-badge ${followDone===14?'done':''}">
+      📋 ${followDone}/14 ${nextFollowIdx>=0 ? '· '+followLabels[nextFollowIdx] : '· Concluído'}
     </div>` : '';
 
-  const firstField = state.fields[0];
-  const fieldVal = firstField ? (card.fields[firstField.id] || '') : '';
-  const secondField = state.fields[1];
-  const field2Val = secondField ? (card.fields[secondField.id] || '') : '';
-
-  const temp = card.temperature || 'warm';
-  const tempLabel = {hot:'🔴 Quente',warm:'🟡 Morno',cold:'🔵 Frio'}[temp];
+  const alertBadge = hasAlert ? `<div class="card-alert" title="${action.text}">!</div>` : '';
 
   return `
-    <div class="card" id="card-${card.id}"
+    <div class="card ${hasAlert?'has-alert':''}" id="card-${card.id}"
       draggable="true"
       ondragstart="dragStart(event,'${card.id}','${col.id}')"
       ondragend="dragEnd(event)">
+      ${alertBadge}
       <div class="card-name">${card.name || 'Sem nome'}</div>
       <div class="card-meta">
         ${fieldVal ? `<span>📍 ${fieldVal}</span>` : ''}
-        ${field2Val ? `<span>💡 R$ ${field2Val}</span>` : ''}
+        ${field2Val ? `<span>⚡ R$ ${field2Val}</span>` : ''}
       </div>
       <div class="card-tags">
         <span class="card-tag ${temp}">${tempLabel}</span>
@@ -382,55 +508,38 @@ function renderCard(card, col) {
   `;
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════
 // DRAG & DROP
-// ═══════════════════════════════════════════════════════
-function dragStart(e, cardId, colId) {
-  dragCardId = cardId;
-  dragFromCol = colId;
-  setTimeout(() => {
-    const el = document.getElementById('card-'+cardId);
-    if(el) el.classList.add('dragging');
-  }, 0);
-}
-function dragEnd(e) {
-  const el = document.getElementById('card-'+dragCardId);
-  if(el) el.classList.remove('dragging');
-}
-function dragOver(e, colId) {
-  e.preventDefault();
-  document.getElementById('col-body-'+colId)?.classList.add('drag-over');
-}
-function dragLeave(e, colId) {
-  document.getElementById('col-body-'+colId)?.classList.remove('drag-over');
-}
-function drop(e, colId) {
+// ═══════════════════════════════════
+function dragStart(e,cardId,colId){ dragCardId=cardId; setTimeout(()=>{document.getElementById('card-'+cardId)?.classList.add('dragging')},0); }
+function dragEnd(e){ document.getElementById('card-'+dragCardId)?.classList.remove('dragging'); }
+function dragOver(e,colId){ e.preventDefault(); document.getElementById('col-body-'+colId)?.classList.add('drag-over'); }
+function dragLeave(e,colId){ document.getElementById('col-body-'+colId)?.classList.remove('drag-over'); }
+function drop(e,colId){
   e.preventDefault();
   document.getElementById('col-body-'+colId)?.classList.remove('drag-over');
   if(!dragCardId) return;
-  const card = state.cards.find(c => c.id === dragCardId);
+  const card = state.cards.find(c=>c.id===dragCardId);
   if(card) card.colId = colId;
   dragCardId = null;
-  dragFromCol = null;
   render();
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════
 // CARD MODAL
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════
 function openNewCard(colId) {
   editingCardId = null;
   document.getElementById('cardModalTitle').textContent = 'Novo Lead';
   document.getElementById('cardDeleteBtn').classList.add('hidden');
-  const defaultColId = colId || state.columns[0]?.id || '';
-  renderCardForm(null, defaultColId);
+  renderCardForm(null, colId || state.columns[0]?.id || '');
   document.getElementById('cardOverlay').classList.remove('hidden');
 }
 
 function openCard(cardId, e) {
   if(e) e.stopPropagation();
   editingCardId = cardId;
-  const card = state.cards.find(c => c.id === cardId);
+  const card = state.cards.find(c=>c.id===cardId);
   if(!card) return;
   document.getElementById('cardModalTitle').textContent = card.name || 'Lead';
   document.getElementById('cardDeleteBtn').classList.remove('hidden');
@@ -439,26 +548,30 @@ function openCard(cardId, e) {
 }
 
 function renderCardForm(card, colId) {
+  const isFollow = colId === FOLLOW_COL;
+  const ticks = card?.followTicks || Array(14).fill(false);
+  window._tmpCustomFields = card?.customFields ? JSON.parse(JSON.stringify(card.customFields)) : [];
+  window._tmpFollowTicks = [...ticks];
+
   const body = document.getElementById('cardModalBody');
-  const isFollowCol = colId === FOLLOW_COL_ID;
-  const followTicks = card?.followTicks || Array(14).fill(false);
+  const action = colActions[colId];
 
   body.innerHTML = `
+    ${action ? `<div style="background:var(--sol2);border:1px solid var(--sol3);border-radius:8px;padding:12px 14px;margin-bottom:20px;font-size:13px;color:var(--sol);display:flex;gap:8px;align-items:flex-start">
+      <span style="flex-shrink:0">💡</span>
+      <span><strong>Próxima ação:</strong> ${action.text}</span>
+    </div>` : ''}
+
     <div class="form-section">
       <div class="form-section-title">Informações do lead</div>
-      <div class="field">
-        <label>Nome do lead *</label>
-        <input type="text" id="cf-name" placeholder="Nome do cliente ou empresa" value="${card?.name || ''}">
-      </div>
+      <div class="field"><label>Nome *</label><input type="text" id="cf-name" placeholder="Nome do cliente" value="${card?.name||''}"></div>
       <div class="field-row">
-        <div class="field">
-          <label>Etapa</label>
-          <select id="cf-col">
-            ${state.columns.map(c => `<option value="${c.id}" ${c.id === colId ? 'selected':''}>${c.name}</option>`).join('')}
+        <div class="field"><label>Etapa</label>
+          <select id="cf-col" onchange="onColChange(this.value)">
+            ${state.columns.map(c=>`<option value="${c.id}" ${c.id===colId?'selected':''}>${c.name}</option>`).join('')}
           </select>
         </div>
-        <div class="field">
-          <label>Temperatura</label>
+        <div class="field"><label>Temperatura</label>
           <select id="cf-temp">
             <option value="hot" ${card?.temperature==='hot'?'selected':''}>🔴 Quente</option>
             <option value="warm" ${(!card||card?.temperature==='warm')?'selected':''}>🟡 Morno</option>
@@ -466,8 +579,7 @@ function renderCardForm(card, colId) {
           </select>
         </div>
       </div>
-      <div class="field">
-        <label>Pagamento</label>
+      <div class="field"><label>Pagamento</label>
         <select id="cf-payment">
           <option value="" ${!card?.payment?'selected':''}>Não definido</option>
           <option value="Financiamento" ${card?.payment==='Financiamento'?'selected':''}>Financiamento</option>
@@ -477,280 +589,133 @@ function renderCardForm(card, colId) {
     </div>
 
     <div class="form-section">
-      <div class="form-section-title">
-        Dados de qualificação
-      </div>
-      ${state.fields.map(f => `
-        <div class="field">
-          <label>${f.name}</label>
-          <input type="text" id="cf-field-${f.id}" placeholder="${f.name}" value="${card?.fields?.[f.id] || ''}">
-        </div>
-      `).join('')}
+      <div class="form-section-title">Dados de qualificação</div>
+      ${state.fields.map(f=>`
+        <div class="field"><label>${f.name}</label>
+          <input type="text" id="cf-field-${f.id}" placeholder="${f.name}" value="${card?.fields?.[f.id]||''}">
+        </div>`).join('')}
       <div class="custom-fields" id="customFieldsWrap">
-        ${(card?.customFields || []).map((cf,i) => `
+        ${(card?.customFields||[]).map((cf,i)=>`
           <div class="custom-field-row" id="cfrow-${i}">
-            <input type="text" placeholder="Campo" value="${cf.label}" oninput="updateCustomFieldLabel(${i},this.value)">
-            <input type="text" placeholder="Valor" value="${cf.value}" oninput="updateCustomFieldValue(${i},this.value)">
-            <button class="remove-field" onclick="removeCustomField(${i})">✕</button>
-          </div>
-        `).join('')}
+            <input type="text" placeholder="Campo" value="${cf.label}" oninput="updateCFL(${i},this.value)">
+            <input type="text" placeholder="Valor" value="${cf.value}" oninput="updateCFV(${i},this.value)">
+            <button class="remove-field" onclick="removeCF(${i})">✕</button>
+          </div>`).join('')}
       </div>
-      <button class="add-field-btn" onclick="addCustomField()">+ Adicionar campo extra</button>
+      <button class="add-field-btn" onclick="addCF()">+ Campo extra</button>
     </div>
 
     <div class="form-section">
       <div class="form-section-title">Observações</div>
-      <div class="field">
-        <textarea id="cf-notes" placeholder="Anotações sobre o lead...">${card?.notes || ''}</textarea>
-      </div>
+      <div class="field"><textarea id="cf-notes" placeholder="Anotações...">${card?.notes||''}</textarea></div>
     </div>
 
-    ${isFollowCol ? `
+    ${isFollow ? `
     <div class="form-section">
       <div class="form-section-title">📋 Follow Up Pós-Proposta — 45 dias</div>
       <div class="follow-section">
         <div class="follow-progress">
-          <div class="follow-bar">
-            <div class="follow-bar-fill" id="followBarFill" style="width:${(followTicks.filter(Boolean).length/14*100)}%"></div>
-          </div>
-          <span class="follow-progress-text" id="followProgressText">${followTicks.filter(Boolean).length}/14 realizados</span>
+          <div class="follow-bar"><div class="follow-bar-fill" id="followFill" style="width:${ticks.filter(Boolean).length/14*100}%"></div></div>
+          <span class="follow-progress-text" id="followText">${ticks.filter(Boolean).length}/14 realizados</span>
         </div>
-        <div class="follow-grid" id="followGrid">
-          ${followLabels.map((label,i) => `
-            <div class="follow-tick ${followTicks[i]?'done':''}" id="ftick-${i}" onclick="toggleTick(${i})">
-              <div class="follow-tick-box">${followTicks[i]?'✓':(i+1)}</div>
-              <div class="follow-tick-label">${label}</div>
-            </div>
-          `).join('')}
+        <div class="follow-grid">
+          ${followLabels.map((lbl,i)=>`
+            <div class="follow-tick ${ticks[i]?'done':''}" id="ftick-${i}" onclick="toggleTick(${i})">
+              <div class="follow-tick-box">${ticks[i]?'✓':(i+1)}</div>
+              <div class="follow-tick-label">${lbl}</div>
+            </div>`).join('')}
         </div>
         <p style="font-size:11px;color:var(--muted);margin-top:12px">Clique em cada dia para marcar como realizado</p>
       </div>
-    </div>
-    ` : ''}
+    </div>` : ''}
   `;
+}
 
-  // guarda custom fields em memória temporária
-  window._tmpCustomFields = card?.customFields ? JSON.parse(JSON.stringify(card.customFields)) : [];
-  window._tmpFollowTicks = [...followTicks];
-
-  // listener do select de etapa para mostrar/esconder follow up
-  document.getElementById('cf-col').addEventListener('change', function() {
-    const newCol = this.value;
-    const isNowFollow = newCol === FOLLOW_COL_ID;
-    // re-render mostrando ou não o follow up
-    const fakeCard = getCurrentFormData();
-    fakeCard.colId = newCol;
-    renderCardForm(fakeCard, newCol);
-  });
+function onColChange(newColId) {
+  const data = getFormData();
+  data.colId = newColId;
+  renderCardForm(data, newColId);
+  document.getElementById('cf-col').value = newColId;
 }
 
 function toggleTick(i) {
   window._tmpFollowTicks[i] = !window._tmpFollowTicks[i];
-  const tick = document.getElementById('ftick-'+i);
-  const box = tick.querySelector('.follow-tick-box');
   const done = window._tmpFollowTicks[i];
-  tick.className = 'follow-tick' + (done?' done':'');
-  box.textContent = done ? '✓' : (i+1);
+  const tick = document.getElementById('ftick-'+i);
+  tick.className = 'follow-tick'+(done?' done':'');
+  tick.querySelector('.follow-tick-box').textContent = done ? '✓' : (i+1);
   const total = window._tmpFollowTicks.filter(Boolean).length;
-  document.getElementById('followBarFill').style.width = (total/14*100)+'%';
-  document.getElementById('followProgressText').textContent = total+'/14 realizados';
+  document.getElementById('followFill').style.width = (total/14*100)+'%';
+  document.getElementById('followText').textContent = total+'/14 realizados';
 }
 
-function addCustomField() {
-  window._tmpCustomFields.push({label:'', value:''});
-  const wrap = document.getElementById('customFieldsWrap');
-  const i = window._tmpCustomFields.length-1;
-  const row = document.createElement('div');
-  row.className = 'custom-field-row';
-  row.id = 'cfrow-'+i;
-  row.innerHTML = `
-    <input type="text" placeholder="Campo" oninput="updateCustomFieldLabel(${i},this.value)">
-    <input type="text" placeholder="Valor" oninput="updateCustomFieldValue(${i},this.value)">
-    <button class="remove-field" onclick="removeCustomField(${i})">✕</button>
-  `;
-  wrap.appendChild(row);
-}
-function updateCustomFieldLabel(i,v){ if(window._tmpCustomFields[i]) window._tmpCustomFields[i].label=v; }
-function updateCustomFieldValue(i,v){ if(window._tmpCustomFields[i]) window._tmpCustomFields[i].value=v; }
-function removeCustomField(i){
-  window._tmpCustomFields[i] = null;
-  const row = document.getElementById('cfrow-'+i);
-  if(row) row.remove();
-}
+function addCF(){ window._tmpCustomFields.push({label:'',value:''}); const i=window._tmpCustomFields.length-1; const wrap=document.getElementById('customFieldsWrap'); const row=document.createElement('div'); row.className='custom-field-row'; row.id='cfrow-'+i; row.innerHTML=`<input type="text" placeholder="Campo" oninput="updateCFL(${i},this.value)"><input type="text" placeholder="Valor" oninput="updateCFV(${i},this.value)"><button class="remove-field" onclick="removeCF(${i})">✕</button>`; wrap.appendChild(row); }
+function updateCFL(i,v){ if(window._tmpCustomFields[i]) window._tmpCustomFields[i].label=v; }
+function updateCFV(i,v){ if(window._tmpCustomFields[i]) window._tmpCustomFields[i].value=v; }
+function removeCF(i){ window._tmpCustomFields[i]=null; document.getElementById('cfrow-'+i)?.remove(); }
 
-function getCurrentFormData() {
-  const fields = {};
-  state.fields.forEach(f => {
-    const el = document.getElementById('cf-field-'+f.id);
-    if(el) fields[f.id] = el.value;
-  });
+function getFormData() {
+  const fields={};
+  state.fields.forEach(f=>{ const el=document.getElementById('cf-field-'+f.id); if(el) fields[f.id]=el.value; });
   return {
-    name: document.getElementById('cf-name')?.value || '',
-    colId: document.getElementById('cf-col')?.value || state.columns[0]?.id,
-    temperature: document.getElementById('cf-temp')?.value || 'warm',
-    payment: document.getElementById('cf-payment')?.value || '',
-    notes: document.getElementById('cf-notes')?.value || '',
+    name: document.getElementById('cf-name')?.value||'',
+    colId: document.getElementById('cf-col')?.value||state.columns[0]?.id,
+    temperature: document.getElementById('cf-temp')?.value||'warm',
+    payment: document.getElementById('cf-payment')?.value||'',
+    notes: document.getElementById('cf-notes')?.value||'',
     fields,
     customFields: (window._tmpCustomFields||[]).filter(Boolean),
-    followTicks: window._tmpFollowTicks || Array(14).fill(false),
+    followTicks: [...(window._tmpFollowTicks||Array(14).fill(false))],
   };
 }
 
 function saveCard() {
-  const data = getCurrentFormData();
+  const data = getFormData();
   if(!data.name.trim()){ alert('Informe o nome do lead'); return; }
-
   if(editingCardId) {
-    const idx = state.cards.findIndex(c => c.id === editingCardId);
-    if(idx>=0) state.cards[idx] = {...state.cards[idx], ...data};
+    const idx = state.cards.findIndex(c=>c.id===editingCardId);
+    if(idx>=0) state.cards[idx]={...state.cards[idx],...data};
   } else {
     state.cards.push({id:'card-'+state.nextId++, ...data});
   }
-  closeCardModal();
-  render();
+  closeCardModal(); render();
 }
 
 function deleteCard() {
-  if(!editingCardId) return;
-  if(!confirm('Excluir este lead?')) return;
-  state.cards = state.cards.filter(c => c.id !== editingCardId);
-  closeCardModal();
-  render();
+  if(!editingCardId||!confirm('Excluir este lead?')) return;
+  state.cards=state.cards.filter(c=>c.id!==editingCardId);
+  closeCardModal(); render();
 }
 
-function closeCardModal() {
-  document.getElementById('cardOverlay').classList.add('hidden');
-  editingCardId = null;
-}
-function closeCardOverlay(e) {
-  if(e.target === document.getElementById('cardOverlay')) closeCardModal();
-}
+function closeCardModal(){ document.getElementById('cardOverlay').classList.add('hidden'); editingCardId=null; }
+function closeCardOverlay(e){ if(e.target===document.getElementById('cardOverlay')) closeCardModal(); }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════
 // COLUMN MODAL
-// ═══════════════════════════════════════════════════════
-function openColModal() {
-  editingColId = null;
-  document.getElementById('colModalTitle').textContent = 'Nova Etapa';
-  document.getElementById('colNameInput').value = '';
-  document.getElementById('colDeleteBtn').classList.add('hidden');
-  selectedColor = colColors[0];
-  renderColorPicker();
-  document.getElementById('colOverlay').classList.remove('hidden');
-}
+// ═══════════════════════════════════
+function openColModal(){ editingColId=null; document.getElementById('colModalTitle').textContent='Nova Etapa'; document.getElementById('colNameInput').value=''; document.getElementById('colDeleteBtn').classList.add('hidden'); selectedColor=colColors[0]; renderColorPicker(); document.getElementById('colOverlay').classList.remove('hidden'); }
+function openColEdit(colId){ editingColId=colId; const col=state.columns.find(c=>c.id===colId); if(!col) return; document.getElementById('colModalTitle').textContent='Editar Etapa'; document.getElementById('colNameInput').value=col.name; document.getElementById('colDeleteBtn').classList.remove('hidden'); selectedColor=col.color; renderColorPicker(); document.getElementById('colOverlay').classList.remove('hidden'); }
+function renderColorPicker(){ document.getElementById('colorPicker').innerHTML=colColors.map(c=>`<div onclick="selectColor('${c}')" style="width:28px;height:28px;border-radius:50%;background:${c};cursor:pointer;border:3px solid ${c===selectedColor?'#fff':'transparent'};box-shadow:${c===selectedColor?'0 0 0 2px '+c:'none'};transition:all .15s"></div>`).join(''); }
+function selectColor(c){ selectedColor=c; renderColorPicker(); }
+function saveCol(){ const name=document.getElementById('colNameInput').value.trim(); if(!name){ alert('Informe o nome'); return; } if(editingColId){ const col=state.columns.find(c=>c.id===editingColId); if(col){col.name=name;col.color=selectedColor;} }else{ state.columns.push({id:'col-'+state.nextId++,name,color:selectedColor}); } closeColModal(); render(); }
+function deleteCol(){ if(!editingColId) return; const hasCards=state.cards.some(c=>c.colId===editingColId); if(!confirm(hasCards?'Essa etapa tem leads. Excluir mesmo assim?':'Excluir essa etapa?')) return; state.columns=state.columns.filter(c=>c.id!==editingColId); state.cards=state.cards.filter(c=>c.colId!==editingColId); closeColModal(); render(); }
+function closeColModal(){ document.getElementById('colOverlay').classList.add('hidden'); editingColId=null; }
+function closeColOverlay(e){ if(e.target===document.getElementById('colOverlay')) closeColModal(); }
 
-function openColEdit(colId) {
-  editingColId = colId;
-  const col = state.columns.find(c => c.id === colId);
-  if(!col) return;
-  document.getElementById('colModalTitle').textContent = 'Editar Etapa';
-  document.getElementById('colNameInput').value = col.name;
-  document.getElementById('colDeleteBtn').classList.remove('hidden');
-  selectedColor = col.color;
-  renderColorPicker();
-  document.getElementById('colOverlay').classList.remove('hidden');
-}
-
-function renderColorPicker() {
-  const wrap = document.getElementById('colorPicker');
-  wrap.innerHTML = colColors.map(c => `
-    <div onclick="selectColor('${c}')" style="
-      width:28px;height:28px;border-radius:50%;background:${c};cursor:pointer;
-      border:3px solid ${c===selectedColor?'#fff':'transparent'};
-      box-shadow:${c===selectedColor?'0 0 0 2px '+c:'none'};
-      transition:all .15s
-    "></div>
-  `).join('');
-}
-
-function selectColor(c) { selectedColor=c; renderColorPicker(); }
-
-function saveCol() {
-  const name = document.getElementById('colNameInput').value.trim();
-  if(!name){ alert('Informe o nome da etapa'); return; }
-  if(editingColId) {
-    const col = state.columns.find(c => c.id === editingColId);
-    if(col){ col.name=name; col.color=selectedColor; }
-  } else {
-    state.columns.push({id:'col-'+state.nextId++, name, color:selectedColor});
-  }
-  closeColModal();
-  render();
-}
-
-function deleteCol() {
-  if(!editingColId) return;
-  const hasCards = state.cards.some(c => c.colId === editingColId);
-  if(hasCards && !confirm('Essa etapa tem leads. Excluir mesmo assim? Os leads serão removidos.')) return;
-  if(!hasCards && !confirm('Excluir essa etapa?')) return;
-  state.columns = state.columns.filter(c => c.id !== editingColId);
-  state.cards = state.cards.filter(c => c.colId !== editingColId);
-  closeColModal();
-  render();
-}
-
-function closeColModal() {
-  document.getElementById('colOverlay').classList.add('hidden');
-  editingColId = null;
-}
-function closeColOverlay(e) {
-  if(e.target === document.getElementById('colOverlay')) closeColModal();
-}
-
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════
 // SETTINGS
-// ═══════════════════════════════════════════════════════
-function openSettings() {
-  renderSettingsFields();
-  document.getElementById('settingsOverlay').classList.remove('hidden');
-}
+// ═══════════════════════════════════
+function openSettings(){ renderSettingsFields(); document.getElementById('settingsOverlay').classList.remove('hidden'); }
+function renderSettingsFields(){ document.getElementById('settingsFieldList').innerHTML=state.fields.map((f,i)=>`<div class="settings-field-item"><span>${f.name}</span><div class="fi-actions">${i>0?`<button class="icon-btn" onclick="moveField(${i},-1)">↑</button>`:''} ${i<state.fields.length-1?`<button class="icon-btn" onclick="moveField(${i},1)">↓</button>`:''}<button class="icon-btn" onclick="removeField('${f.id}')" style="color:var(--red)">✕</button></div></div>`).join(''); }
+function addSettingsField(){ const input=document.getElementById('newFieldInput'); const name=input.value.trim(); if(!name) return; state.fields.push({id:'f'+state.nextId++,name}); input.value=''; renderSettingsFields(); }
+function removeField(id){ state.fields=state.fields.filter(f=>f.id!==id); renderSettingsFields(); }
+function moveField(i,dir){ const j=i+dir; if(j<0||j>=state.fields.length) return; [state.fields[i],state.fields[j]]=[state.fields[j],state.fields[i]]; renderSettingsFields(); }
+function closeSettings(){ document.getElementById('settingsOverlay').classList.add('hidden'); render(); }
+function closeSettingsOverlay(e){ if(e.target===document.getElementById('settingsOverlay')) closeSettings(); }
 
-function renderSettingsFields() {
-  const list = document.getElementById('settingsFieldList');
-  list.innerHTML = state.fields.map((f,i) => `
-    <div class="settings-field-item">
-      <span>${f.name}</span>
-      <div class="fi-actions">
-        ${i>0?`<button class="icon-btn" onclick="moveField(${i},-1)" title="Subir">↑</button>`:''}
-        ${i<state.fields.length-1?`<button class="icon-btn" onclick="moveField(${i},1)" title="Descer">↓</button>`:''}
-        <button class="icon-btn" onclick="removeSettingsField('${f.id}')" title="Remover" style="color:var(--red)">✕</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function addSettingsField() {
-  const input = document.getElementById('newFieldInput');
-  const name = input.value.trim();
-  if(!name) return;
-  state.fields.push({id:'f'+state.nextId++, name});
-  input.value = '';
-  renderSettingsFields();
-}
-
-function removeSettingsField(id) {
-  state.fields = state.fields.filter(f => f.id !== id);
-  renderSettingsFields();
-}
-
-function moveField(i, dir) {
-  const j = i+dir;
-  if(j<0||j>=state.fields.length) return;
-  [state.fields[i],state.fields[j]] = [state.fields[j],state.fields[i]];
-  renderSettingsFields();
-}
-
-function closeSettings() {
-  document.getElementById('settingsOverlay').classList.add('hidden');
-  render();
-}
-function closeSettingsOverlay(e) {
-  if(e.target===document.getElementById('settingsOverlay')) closeSettings();
-}
-
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════
 render();
 </script>
 </body>
